@@ -21,3 +21,6 @@ uv.lock
 .vscode/
 .idea/
 *.swp
+
+.env
+.env.local
