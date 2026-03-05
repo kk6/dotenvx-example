@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.login }} - GitHub Profile{% endblock %}
+{% block content %}
+<div class="profile-card">
+  <img src="{{ profile.avatar_url }}" alt="{{ profile.login }}" class="avatar">
+  <div class="profile-info">
+    <h1>{{ profile.name or profile.login }}</h1>
+    <p class="username">@{{ profile.login }}</p>
+    {% if profile.bio %}
+    <p class="bio">{{ profile.bio }}</p>
+    {% endif %}
+    <div class="stats">
+      <span>Repos: <strong>{{ profile.public_repos }}</strong></span>
+      <span>Followers: <strong>{{ profile.followers }}</strong></span>
+      <span>Following: <strong>{{ profile.following }}</strong></span>
+    </div>
+    {% if profile.location %}
+    <p>Location: {{ profile.location }}</p>
+    {% endif %}
+    {% if profile.blog %}
+    <p>Blog: <a href="{{ profile.blog }}" target="_blank" rel="noopener">{{ profile.blog }}</a></p>
+    {% endif %}
+    <a href="{{ profile.html_url }}" target="_blank" rel="noopener" class="btn">View on GitHub</a>
+  </div>
+</div>
+<p><a href="/">&larr; Search again</a></p>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Viewing History{% endblock %}
+{% block content %}
+<h1>Viewing History</h1>
+{% if records %}
+<table>
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Display Name</th>
+      <th>Repos</th>
+      <th>Followers</th>
+      <th>Viewed At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in records %}
+    <tr>
+      <td><a href="/profile/{{ r.username }}">{{ r.username }}</a></td>
+      <td>{{ r.display_name or "-" }}</td>
+      <td>{{ r.public_repos if r.public_repos is not none else "-" }}</td>
+      <td>{{ r.followers if r.followers is not none else "-" }}</td>
+      <td>{{ r.viewed_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No history yet. <a href="/">Search for a GitHub user</a> to get started.</p>
+{% endif %}
+{% endblock %}

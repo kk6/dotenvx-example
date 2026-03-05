@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}GitHub Profile Search{% endblock %}
+{% block content %}
+<h1>GitHub Profile Search</h1>
+<p>dotenvx でシークレットを管理するサンプルアプリです。</p>
+<form action="" method="get" onsubmit="return navigate(event)">
+  <div class="search-box">
+    <input id="username-input" type="text" name="username" placeholder="GitHub username" required autofocus>
+    <button type="submit">Search</button>
+  </div>
+</form>
+<script>
+  function navigate(e) {
+    e.preventDefault();
+    const username = document.getElementById('username-input').value.trim();
+    if (username) window.location.href = '/profile/' + encodeURIComponent(username);
+    return false;
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+# dotenvx private keys — NEVER commit these
+.env.keys
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+
+# Docker
+.docker/
+
+# Editor
+.vscode/
+.idea/
+*.swp
