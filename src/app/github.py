@@ -1,6 +1,7 @@
 import logging
 import os
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 
@@ -38,7 +39,7 @@ async def fetch_github_profile(username: str, client: httpx.AsyncClient) -> dict
     Raises:
         httpx.HTTPStatusError: When the API returns a non-2xx response.
     """
-    url = f"{GITHUB_API_BASE}/users/{username}"
+    url = f"{GITHUB_API_BASE}/users/{quote(username, safe='')}"
     response = await client.get(url)
     response.raise_for_status()
     return response.json()

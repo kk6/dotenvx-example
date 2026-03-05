@@ -18,9 +18,9 @@
     <p>Location: {{ profile.location }}</p>
     {% endif %}
     {% if profile.blog %}
-    <p>Blog: <a href="{{ profile.blog }}" target="_blank" rel="noopener">{{ profile.blog }}</a></p>
+    <p>Blog: <a href="{{ profile.blog | safe_url }}" target="_blank" rel="noopener">{{ profile.blog }}</a></p>
     {% endif %}
-    <a href="{{ profile.html_url }}" target="_blank" rel="noopener" class="btn">View on GitHub</a>
+    <a href="{{ profile.html_url | safe_url }}" target="_blank" rel="noopener" class="btn">View on GitHub</a>
   </div>
 </div>
 <p><a href="/">&larr; Search again</a></p>

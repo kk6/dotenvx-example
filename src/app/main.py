@@ -1,5 +1,5 @@
 import logging
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 
 import httpx
@@ -9,12 +9,35 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from app.database import get_session, init_db
 from app.github import create_github_client, fetch_github_profile
 from app.models import ProfileHistory
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_url(url: str | None) -> str:
+    """Return the URL only if it uses http/https scheme; otherwise return empty string."""
+    if url and url.startswith(("https://", "http://")):
+        return url
+    return ""
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "img-src 'self' https://avatars.githubusercontent.com; "
+            "style-src 'self';"
+        )
+        return response
 
 
 @asynccontextmanager
@@ -27,8 +50,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="dotenvx-sample", lifespan=lifespan)
+app.add_middleware(SecurityHeadersMiddleware)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+templates.env.filters["safe_url"] = _safe_url
 
 
 @app.get("/", response_class=HTMLResponse)
