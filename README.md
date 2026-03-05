@@ -40,6 +40,24 @@ dotenvx encrypt
 
 ### 2. 秘密鍵と POSTGRES_PASSWORD をエクスポート
 
+#### macOS Keychain を使う場合（推奨）
+
+初回のみ Keychain へ登録する:
+
+```bash
+bash scripts/keychain-setup.sh
+```
+
+以降は Keychain から取得:
+
+```bash
+export DOTENV_PRIVATE_KEY=$(security find-generic-password \
+  -a "$USER" -s "dotenvx-sample-private-key" -w)
+export POSTGRES_PASSWORD=<.env に設定したパスワード>
+```
+
+#### .env.keys から直接取得する場合（初回セットアップ時 or Keychain 未使用時）
+
 `.env.keys` の値はクォートなしで記録されているため `cut -d'=' -f2` を使う。
 
 ```bash

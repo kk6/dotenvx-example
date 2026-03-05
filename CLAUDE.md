@@ -60,7 +60,8 @@ static/          # 静的ファイル
 
 - dotenvx は `dotenvx run` で起動した **子プロセスにのみ** 変数を注入する
 - `docker compose exec app env` で変数が見えないのは**正常動作**
-- 秘密鍵の取得: `grep "^DOTENV_PRIVATE_KEY=" .env.keys | cut -d'=' -f2`（クォートなしのため `cut` が必要）
+- 秘密鍵の取得（Keychain）: `security find-generic-password -a "$USER" -s "dotenvx-sample-private-key" -w`
+- 秘密鍵の取得（.env.keys 直接）: `grep "^DOTENV_PRIVATE_KEY=" .env.keys | cut -d'=' -f2`（クォートなしのため `cut` が必要）
 - シークレット更新: `dotenvx set KEY value`（`KEY=value` 形式は不可）
 
 ### ローカル開発の手順
@@ -68,7 +69,13 @@ static/          # 静的ファイル
 ```bash
 cp .env.example .env.local
 # .env.local に平文で値を設定（git 管理しない）
-export DOTENV_PRIVATE_KEY=$(grep "^DOTENV_PRIVATE_KEY=" .env.keys | cut -d'=' -f2)
+
+# macOS Keychain から秘密鍵を取得（初回セットアップ: scripts/keychain-setup.sh を実行）
+export DOTENV_PRIVATE_KEY=$(security find-generic-password \
+  -a "$USER" -s "dotenvx-sample-private-key" -w)
+
+# Keychain 未使用時の代替手順
+# export DOTENV_PRIVATE_KEY=$(grep "^DOTENV_PRIVATE_KEY=" .env.keys | cut -d'=' -f2)
 ```
 
 ## Testing Patterns
